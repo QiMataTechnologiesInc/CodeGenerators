@@ -9,7 +9,7 @@ module CodeGenerator.Generators {
 			let includeGuard = this.createIncludeGuard();
 			
 			classDefinition += "#ifndef " + includeGuard + "\n";
-			classDefinition += "#define " + includeGuard + "\n";
+			classDefinition += "#define " + includeGuard + "\n\n";
 			
 			classDefinition += this.createClassDefinition();
 			
@@ -63,6 +63,58 @@ module CodeGenerator.Generators {
 			}
 			
 			return tabStr;
+		}
+		
+		private createMemberDefinitions(isolationLevel : Models.IsolationLevel,tabCount : number) {
+			let memberDefinitions = "";
+			
+			this.classModel.members.forEach(member => {
+				if (member.isolationLevel !== isolationLevel) {
+					return;
+				}
+				
+				if (member.templateArgs.length) {
+					memberDefinitions += "template <";
+					for(let i = 0; i < member.templateArgs.length; i++) {
+						let template = member.templateArgs[i];
+						
+						memberDefinitions += template.type + " " + template.name;
+						if (i !== member.templateArgs.length - 1) {
+							memberDefinitions += ",";
+						}
+					}
+					memberDefinitions += "> ";
+				}
+				
+				if (member.virtual) {
+					memberDefinitions += "virtual ";
+				}
+				
+				memberDefinitions += member.returnType + " " + member.name + "(";
+				
+				for (let i = 0; i < member.parameters.length; i++) {
+					let param = member.parameters[i];
+					
+					if (param.const) {
+						memberDefinitions += "const ";
+					}
+					
+					memberDefinitions += param.type + " " + param.name;
+					if (i !== member.parameters.length -1) {
+						memberDefinitions += ",";
+					}
+				}
+				
+				memberDefinitions += ")";
+				
+				if (member.constant) {
+					memberDefinitions += " const";
+				}
+				
+				if (member.noexcept) {
+					memberDefinitions += " noexcept";
+				}
+			});
 		}
 	}
 }
