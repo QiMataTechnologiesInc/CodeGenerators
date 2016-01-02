@@ -43,8 +43,11 @@ module CodeGenerator.Generators {
 			classDefinition += this.tabsString(tabCount) + "class " + this.classModel.className + "\n";
 			classDefinition += this.tabsString(tabCount) + "{\n";
 			classDefinition += this.tabsString(tabCount + 1) + "public:\n";
+            classDefinition += this.tabsString(tabCount + 2) + this.createMemberDefinitions(Models.IsolationLevel.public) + '\n';
 			classDefinition += this.tabsString(tabCount + 1) + "protected:\n";
+            classDefinition += this.tabsString(tabCount + 2) + this.createMemberDefinitions(Models.IsolationLevel.protected)+ '\n';
 			classDefinition += this.tabsString(tabCount + 1) + "private:\n";
+            classDefinition += this.tabsString(tabCount + 2) + this.createMemberDefinitions(Models.IsolationLevel.private)+ '\n';
 			classDefinition += this.tabsString(tabCount) + "};\n";
 			
 			this.classModel.namespaces.forEach(nameSpace => {
@@ -65,11 +68,11 @@ module CodeGenerator.Generators {
 			return tabStr;
 		}
 		
-		private createMemberDefinitions(isolationLevel : Models.IsolationLevel,tabCount : number) {
+		private createMemberDefinitions(isolationLevel : Models.IsolationLevel) {
 			let memberDefinitions = "";
 			
 			this.classModel.members.forEach(member => {
-				if (member.isolationLevel !== isolationLevel) {
+				if (member.isolationLevel != isolationLevel) {
 					return;
 				}
 				
@@ -115,6 +118,8 @@ module CodeGenerator.Generators {
 					memberDefinitions += " noexcept";
 				}
 			});
+            
+            return memberDefinitions;
 		}
 	}
 }
