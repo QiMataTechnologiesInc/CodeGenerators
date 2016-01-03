@@ -2,11 +2,11 @@
     <form>
         <div class="form-group">
             <label for="namespaces">Namespaces: </label>
-            <input type="text" class="form-control" ng-model="namespaceTextBox" id="namespaces" placeholder="Namespaces">
+            <input type="text" class="form-control" ng-model="namespaceTextBox"  placeholder="Namespaces">
         </div>
         <div class="form-group">
             <label for="className">Class Name: </label>
-            <input type="text" class="form-control" id="typeModel.className" ng-model="typeModel.className" placeholder="Class Name">
+            <input type="text" class="form-control"  ng-model="typeModel.className" placeholder="Class Name">
         </div>
         <div class="text-center">
             <div class="btn-group" role="group" aria-label="addstuff">
@@ -16,7 +16,7 @@
         <div ng-repeat="member in typeModel.members" ng-controller="CPPMemberController">
             <div class="form-group">
                 <label for="memberName">Member Name: </label>
-                <input type="text" class="form-control" id="member.name" ng-model="member.name" placeholder="Member Name">
+                <input type="text" class="form-control"  ng-model="member.name" placeholder="Member Name">
             </div>
             <div class="form-group">
                 <label for="memberName">Isolation Level: </label>
@@ -25,18 +25,60 @@
                     <option value="1">Protected</option>
                     <option value="2">Private</option>
                 </select>
-                <input type="text" class="form-control" id="member.name" ng-model="member.name" placeholder="Member Name">
             </div>
-            <div class="form-group">
-                <label class="checkbox-inline">
-                    <input type="checkbox" ng-model="member.virtual"> virtual
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" ng-model="member.noexcept"> noexcept
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" ng-model="member.constant"> constant
-                </label>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" ng-model="member.virtual"> virtual
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" ng-model="member.noexcept"> noexcept
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" ng-model="member.constant"> constant
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center">
+                        <div class="btn-group" role="group" aria-label="addmemberstuff">
+                            <button type="button" class="btn btn-default" ng-click="addTemplateArg()">Add Template Arg</button>
+                            <button type="button" class="btn btn-default" ng-click="addParameter()">Add Parameter</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div ng-repeat="templateArg in member.templateArgs">
+                                <div class="form-group">
+                                    <label for="templateArgType">Type: </label>
+                                    <input type="text" class="form-control"  ng-model="templateArg.type" placeholder="Template Type">
+                                </div>
+                                <div class="form-group">
+                                    <label for="templateName">Name: </label>
+                                    <input type="text" class="form-control"  ng-model="templateArg.name" placeholder="Template Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div ng-repeat="parameter in member.parameters">
+                                <div class="form-group">
+                                    <label for="templateArgType">Type: </label>
+                                    <input type="text" class="form-control"  ng-model="parameter.type" placeholder="Parameter Type">
+                                </div>
+                                <div class="form-group">
+                                    <label for="templateName">Name: </label>
+                                    <input type="text" class="form-control"  ng-model="parameter.name" placeholder="Parameter Name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" ng-model="parameter.const"> const
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </form>

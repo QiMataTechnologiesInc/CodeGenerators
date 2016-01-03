@@ -117,6 +117,12 @@ module CodeGenerator.Generators {
 				if (member.noexcept) {
 					memberDefinitions += " noexcept";
 				}
+                
+                if (member.templateArgs.length)  {
+                    memberDefinitions+= '{}'
+                } else {
+                    memberDefinitions+= ';'
+                }
 			});
             
             return memberDefinitions;

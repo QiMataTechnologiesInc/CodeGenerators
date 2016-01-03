@@ -2,11 +2,13 @@
 /// <reference path="../Generators/StringGenerator.ts" />
 /// <reference path="../../typings/angularjs/angular.d.ts" />
 module CodeGenerator.Controllers {
-    interface CPPGeneratorScope extends angular.IScope {
+    export interface CPPGeneratorScope extends angular.IScope {
         typeModel: Models.CPPTypeModel;
         
         namespaceTextBox: string;
         classOutput: string;
+        
+        createClass: () => void;
         
         addMember: () => void;
     }
@@ -21,6 +23,7 @@ module CodeGenerator.Controllers {
             }
             
             $scope.addMember = () => { this.addMember(); };
+            $scope.createClass = () => { this.setClass(); };
             
             this.setupWatches();
 		}
@@ -56,6 +59,11 @@ module CodeGenerator.Controllers {
         }
         
         private setClass() : void {
+            //check to see if namespaces can be split
+            if (!this.$scope.namespaceTextBox || this.$scope.namespaceTextBox === '') {
+                return;
+            }
+            
             //set the namespaces to a proper split
             this.$scope.typeModel.namespaces = this.$scope.namespaceTextBox.split('.');
             
