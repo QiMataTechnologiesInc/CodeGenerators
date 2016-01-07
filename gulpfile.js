@@ -10,5 +10,5 @@ gulp.task('compile-typescript',function () {
         "target": "es5",
 		"sourceMap": true,
 		"module": "amd"
-    })).pipe(gulp.dest('/var/www/js/'));
+    })).pipe(gulp.dest('c:/var/www/js/'));
 });

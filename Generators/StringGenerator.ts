@@ -1,7 +1,8 @@
 /// <reference path="../Models/CPPTypeModel.ts" />
+/// <reference path="../Extensions/IExtension.ts" />
 module CodeGenerator.Generators {
 	export class StringGenerator {
-		constructor(private classModel: Models.CPPTypeModel) {}
+		constructor(private classModel: Models.CPPTypeModel,private extensions: Extensions.IExtension[]) {}
 		
 		public getClassString() : string {
 			let classDefinition = "";
@@ -44,10 +45,13 @@ module CodeGenerator.Generators {
 			classDefinition += this.tabsString(tabCount) + "{\n";
 			classDefinition += this.tabsString(tabCount + 1) + "public:\n";
             classDefinition += this.tabsString(tabCount + 2) + this.createMemberDefinitions(Models.IsolationLevel.public) + '\n';
+            classDefinition += this.tabsString(tabCount + 2) + this.createPropertyDefinitions(Models.IsolationLevel.public,tabCount);
 			classDefinition += this.tabsString(tabCount + 1) + "protected:\n";
             classDefinition += this.tabsString(tabCount + 2) + this.createMemberDefinitions(Models.IsolationLevel.protected)+ '\n';
+            classDefinition += this.tabsString(tabCount + 2) + this.createPropertyDefinitions(Models.IsolationLevel.public,tabCount);
 			classDefinition += this.tabsString(tabCount + 1) + "private:\n";
             classDefinition += this.tabsString(tabCount + 2) + this.createMemberDefinitions(Models.IsolationLevel.private)+ '\n';
+            classDefinition += this.tabsString(tabCount + 2) + this.createPropertyDefinitions(Models.IsolationLevel.public,tabCount);
 			classDefinition += this.tabsString(tabCount) + "};\n";
 			
 			this.classModel.namespaces.forEach(nameSpace => {
@@ -127,5 +131,42 @@ module CodeGenerator.Generators {
             
             return memberDefinitions;
 		}
+        
+        private createPropertyDefinitions(isolationLevel : Models.IsolationLevel,tabCount: number) {
+            let propertyDefinition = "";
+            let wroteSomething = false;
+            
+            for (let i = 0; i < this.classModel.properties.length; i++) {
+                let property = this.classModel.properties[i];
+                
+                if (property.hasGetter && isolationLevel === property.getterIsolationLevel) {
+                    if (property.getterVirtual) {
+                        propertyDefinition += "virutal ";
+                    }
+                    propertyDefinition += property.type + " get_" + property.name + "(){ return " + property.name + "_; }\n"
+                    wroteSomething = true;
+                }
+                
+                if (property.hasSetter && isolationLevel === property.setterIsolationLevel) {
+                    if (wroteSomething) {
+                        propertyDefinition += this.tabsString(tabCount);
+                    }
+                    
+                    if (property.setterVirtual) {
+                        propertyDefinition += "virtual ";
+                    }
+                    propertyDefinition += property.type + " set_" + property.name + "(){ return " + property.name + "_; }\n";
+                    wroteSomething = true;
+                }
+                
+                if (isolationLevel === Models.IsolationLevel.private) {
+                    if (wroteSomething) {
+                        propertyDefinition += this.tabsString(tabCount);
+                    }
+                    
+                    propertyDefinition += property.type + " " + property.name + "_;\n";
+                }
+            }
+        }
 	}
 }
